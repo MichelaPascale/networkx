@@ -1,4 +1,4 @@
-"""Basic algorithms for breadth-first searching the nodes of a graph."""
+#"""Basic algorithms for breadth-first searching the nodes of a graph."""
 import networkx as nx
 from collections import deque
 
@@ -73,11 +73,13 @@ def generic_bfs_edges(G, source, neighbors=None, depth_limit=None, sort_neighbor
     if depth_limit is None:
         depth_limit = len(G)
     queue = deque([(source, depth_limit, neighbors(source))])
+    print(source)  #stampo il nodo di partenza
     while queue:
         parent, depth_now, children = queue[0]
         try:
             child = next(children)
             if child not in visited:
+                print(child) #stampo tutti i nodi figli chee vengono visitati
                 yield parent, child
                 visited.add(child)
                 if depth_now > 1:
@@ -99,7 +101,7 @@ def bfs_edges(G, source, reverse=False, depth_limit=None, sort_neighbors=None):
        this node.
 
     reverse : bool, optional
-       If True traverse a directed graph in the reverse direction
+       If True traverse a directed graph in the reverse direction (Se True attraversa un grafico orientato nella direzione opposta)
 
     depth_limit : int, optional(default=len(G))
         Specify the maximum search depth
@@ -157,10 +159,15 @@ def bfs_edges(G, source, reverse=False, depth_limit=None, sort_neighbors=None):
     edge_bfs
 
     """
+    """"se G è un grafo orientato"""
     if reverse and G.is_directed():
         successors = G.predecessors
     else:
         successors = G.neighbors
+     
+    #print(type(successors))
+    #print('%s' %successors)
+
     yield from generic_bfs_edges(G, source, successors, depth_limit, sort_neighbors)
 
 
@@ -405,3 +412,21 @@ def descendants_at_distance(G, source, distance):
         queue = next_vertices
 
     return set()
+
+
+def main():
+    g = nx.Graph()
+    g.add_nodes_from(['A', 'B', 'C', 'D', 'E', 'F', 'G'])
+
+    g.add_edge('A','B')
+    g.add_edge('A','C')
+    g.add_edge('B','D')
+    g.add_edge('B','E')
+    g.add_edge('C','F')
+    g.add_edge('C','G')
+    
+    print(list(nx.bfs_edges(g, source='A')))
+
+#Per eseguire il main in python
+if __name__ == '__main__':
+    main()
